@@ -1,0 +1,60 @@
+package com.codealpha.studenttracker;
+
+import java.io.*;
+import java.util.ArrayList;
+
+public class FileManager {
+
+    private static final String FILE_NAME = "students.txt";
+
+    // Save Student Data
+    public static void saveStudents(ArrayList<Student> students) {
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
+
+            for (Student s : students) {
+                writer.println(s.getRollNo() + "," +
+                               s.getName() + "," +
+                               s.getMarks());
+            }
+
+            System.out.println("Student records saved successfully.");
+
+        } catch (IOException e) {
+            System.out.println("Error while saving file.");
+        }
+    }
+
+    // Load Student Data
+    public static ArrayList<Student> loadStudents() {
+
+        ArrayList<Student> students = new ArrayList<>();
+
+        File file = new File(FILE_NAME);
+
+        if (!file.exists()) {
+            return students;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                String[] data = line.split(",");
+
+                int rollNo = Integer.parseInt(data[0]);
+                String name = data[1];
+                double marks = Double.parseDouble(data[2]);
+
+                students.add(new Student(rollNo, name, marks));
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error while reading file.");
+        }
+
+        return students;
+    }
+}
